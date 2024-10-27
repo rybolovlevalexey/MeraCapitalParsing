@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "meracapitalparsing"
+version = "0.1.0"
+description = "A test assignment for a position junior back-end developer"
+authors = ["Alexey"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiohttp = "^3.10.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
