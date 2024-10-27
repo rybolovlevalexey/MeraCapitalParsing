@@ -1,6 +1,8 @@
 from sqlalchemy import Integer, String, Float, Boolean, ForeignKey, Column, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.hybrid import hybrid_property
+from datetime import datetime
 
 from app.config import settings
 
@@ -21,3 +23,13 @@ class CostInfo(Base):
     cur_cost: Mapped[float] = mapped_column(Float, nullable=False)
     timestamp: Mapped[int] = mapped_column(Integer, nullable=False)
 
+    @hybrid_property
+    def date(self) -> datetime.date:
+        # Вычисляемое поле, возвращающее дату на основе timestamp
+        return datetime.fromtimestamp(self.timestamp).date()
+
+    @date.expression
+    def date(cls) -> datetime.date:
+        # Вычисляемое поле, возвращающее дату на основе timestamp
+        # использование date.expression позволяет использовать поле в sql запросах
+        return datetime.fromtimestamp(cls.timestamp).date()
