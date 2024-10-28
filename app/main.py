@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-import asyncio
 import uvicorn
 
 from app.routers.currencies import currencies_router
@@ -10,7 +9,6 @@ from app.services import BackGroundTasks
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print(settings.get_db_url())
     background_tasks = BackGroundTasks()
     # Действия перед запуском API
     background_tasks.start_background_task()  # Запуск фоновой задачи

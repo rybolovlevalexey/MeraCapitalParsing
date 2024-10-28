@@ -1,4 +1,3 @@
-from pprint import pprint
 import aiohttp
 import asyncio
 
@@ -69,12 +68,3 @@ class BackGroundTasks:
             except asyncio.CancelledError:
                 pass
 
-
-# Тестовые запуски
-if __name__ == "__main__":
-    async def main():
-        bg_task = BackGroundTasks()
-        await bg_task.parse_and_save()
-
-
-    asyncio.run(main())
