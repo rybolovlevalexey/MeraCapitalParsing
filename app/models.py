@@ -1,7 +1,8 @@
-from sqlalchemy import Integer, String, Float, Boolean, ForeignKey, Column, TIMESTAMP
+from sqlalchemy import Integer, String, Float, Boolean, ForeignKey, Column, TIMESTAMP, func, cast
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.sql import expression
 from datetime import datetime
 
 from app.config import settings
@@ -29,7 +30,7 @@ class CostInfo(Base):
         return datetime.fromtimestamp(self.timestamp).date()
 
     @date.expression
-    def date(cls) -> datetime.date:
+    def date(cls) -> expression.ColumnElement:
         # Вычисляемое поле, возвращающее дату на основе timestamp
         # использование date.expression позволяет использовать поле в sql запросах
-        return datetime.fromtimestamp(cls.timestamp).date()
+        return func.date(func.from_unixtime(cast(cls.timestamp, Float)))
