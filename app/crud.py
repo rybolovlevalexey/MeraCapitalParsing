@@ -5,7 +5,7 @@ import asyncio
 import time
 from datetime import datetime, date, timedelta
 
-from models import CostInfo, async_session_maker
+from app.models import CostInfo, async_session_maker
 
 
 class CostsInfoActions:

@@ -2,7 +2,7 @@ from pprint import pprint
 import aiohttp
 import asyncio
 
-from crud import CostsInfoActions
+from app.crud import CostsInfoActions
 
 
 class Parsing:
@@ -51,7 +51,6 @@ class BackGroundTasks:
 
         # ежеминутный парсинг и сохранение информации
         while True:
-            print("in updated while true")
             for ticker in tickers_list:
                 cur_cost = await self.parsing_acts.get_current_cost(ticker)
                 await CostsInfoActions().add_new_data_about_costs(ticker, cur_cost)
@@ -74,10 +73,8 @@ class BackGroundTasks:
 # Тестовые запуски
 if __name__ == "__main__":
     async def main():
-        parser = Parsing()
-        resp = await parser.get_current_cost("eth_usd")
-        pprint(resp)
-        await parser.session.close()
+        bg_task = BackGroundTasks()
+        await bg_task.parse_and_save()
 
 
     asyncio.run(main())

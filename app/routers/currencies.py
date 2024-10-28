@@ -33,8 +33,10 @@ async def get_latest_price_info_by_ticker(ticker_name: str):
 
 @currencies_router.get("/{ticker_name}/date_filter/", response_model=list[CurCostInfo])
 async def get_price_info_by_list_of_dates(ticker_name: str,
-                                          dates_list: list[datetime] | None = Query(
+                                          dates: list[datetime] | None = Query(
                                               None, description="Одна или несколько дат в формате YYYY-MM-DD")):
+    # dates_list = list(map(lambda elem: elem.date(), dates))
+    dates_list = dates.copy()
     cost_info_acts = CostsInfoActions()
     if not await cost_info_acts.check_ticker_in_database(ticker_name):
         return JSONResponse(status_code=404, content={"message": "Ticker name not found"})
