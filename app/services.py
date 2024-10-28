@@ -2,10 +2,10 @@ from pprint import pprint
 import aiohttp
 import asyncio
 
+from crud import CostsInfoActions
+
 
 class Parsing:
-    session: aiohttp.ClientSession
-
     def __init__(self):
         self.session = aiohttp.ClientSession()
 
@@ -37,6 +37,23 @@ class Parsing:
             result_json = result.json()
             cur_index_price = result_json["result"]["index_price"]
             return cur_index_price
+
+
+class BackGroundTasks:
+    def __init__(self):
+        self.parsing_acts = Parsing()
+        self.default_tickers_list: list[str] = ["btc_usd", "eth_usd"]
+
+    async def parse_and_save(self, tickers_list: list[str] | None = None):
+        if tickers_list is None:
+            tickers_list = self.default_tickers_list.copy()
+
+        # ежеминутный парсинг и сохранение информации
+        while True:
+            for ticker in tickers_list:
+                cur_cost = await self.parsing_acts.get_current_cost(ticker)
+                await CostsInfoActions().add_new_data_about_costs(ticker, cur_cost)
+            await asyncio.sleep(60)
 
 
 # Тестовые запуски

@@ -8,6 +8,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 aiohttp = "^3.10.10"
+sqlalchemy = "^2.0.36"
+pydantic = "^2.9.2"
+pydantic-settings = "^2.6.0"
+aiosqlite = "^0.20.0"
+alembic = "^1.13.3"
+fastapi = "^0.115.3"
+uvicorn = "^0.32.0"
 
 
 [build-system]
