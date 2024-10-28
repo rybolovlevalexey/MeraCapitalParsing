@@ -43,6 +43,7 @@ class BackGroundTasks:
     def __init__(self):
         self.parsing_acts = Parsing()
         self.default_tickers_list: list[str] = ["btc_usd", "eth_usd"]
+        self._task: None | asyncio.Task = None  # хранение фоновой задачи
 
     async def parse_and_save(self, tickers_list: list[str] | None = None):
         if tickers_list is None:
@@ -50,10 +51,24 @@ class BackGroundTasks:
 
         # ежеминутный парсинг и сохранение информации
         while True:
+            print("in updated while true")
             for ticker in tickers_list:
                 cur_cost = await self.parsing_acts.get_current_cost(ticker)
                 await CostsInfoActions().add_new_data_about_costs(ticker, cur_cost)
             await asyncio.sleep(60)
+
+    def start_background_task(self):
+        # запуск фоновой задачи
+        self._task = asyncio.create_task(self.parse_and_save())
+
+    async def stop_background_task(self):
+        # остановка фоновой задачи
+        if self._task is not None:
+            self._task.cancel()
+            try:
+                await self._task
+            except asyncio.CancelledError:
+                pass
 
 
 # Тестовые запуски

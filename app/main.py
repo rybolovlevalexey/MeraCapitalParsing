@@ -7,22 +7,25 @@ import uvicorn
 from services import BackGroundTasks
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    background_tasks = BackGroundTasks()
+    # Действия перед запуском API
+    background_tasks.start_background_task()  # Запуск фоновой задачи
+    try:
+        yield  # Переход к основному жизненному циклу
+    finally:
+        # Действия при завершении API
+        await background_tasks.stop_background_task()  # Остановка фоновой задачи
+
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(currencies_router)
 
 
 @app.get("/")
 def index():
     pass
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # действия выполняемые до начала работы API
-    await asyncio.create_task(BackGroundTasks().parse_and_save())  # запуск фоновой задачи
-    # возвращение к основному жизненному циклу
-    yield
-    # выполнение действий после завершения работы API
 
 
 if __name__ == "__main__":
