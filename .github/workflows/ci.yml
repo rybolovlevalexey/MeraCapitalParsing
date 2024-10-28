@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout_code
+        uses: actions/checkout@v2
+
+      - name: set_up_python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: poetry_installing
+        run: | 
+          pip install poetry
+
+      - name: install_dependencies
+        run: | 
+          poetry install
+
+      - name: run_tests
+        run: | 
+          poetry run pytest
